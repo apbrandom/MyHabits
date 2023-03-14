@@ -68,7 +68,9 @@ class InfoViewController: UIViewController {
             title: "Информация",
             image: UIImage(systemName: "info.circle.fill"),
             tag: 0)
+        
         tabBarItem.selectedImage = UIImage(systemName: "info.circle.fill")?.withTintColor(UIColor.systemPurple, renderingMode: .alwaysOriginal)
+        
         tabBarItem.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.systemPurple], for: .selected)
     }
     
@@ -77,7 +79,6 @@ class InfoViewController: UIViewController {
         scrollView.addSubview(contentView)
         contentView.addSubview(headerLabel)
         contentView.addSubview(infoTextView)
-        
     }
     
     private func setupConstrains() {

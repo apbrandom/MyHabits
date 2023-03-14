@@ -15,6 +15,7 @@
 		CBDD559B29B9E2EB0098917F /* HabitsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBDD559A29B9E2EB0098917F /* HabitsViewController.swift */; };
 		CBDD559D29B9E3360098917F /* InfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBDD559C29B9E3360098917F /* InfoViewController.swift */; };
 		CBDD55A129BA59470098917F /* InfoText.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBDD55A029BA59470098917F /* InfoText.swift */; };
+		CBE7D65F29C114ED00598ECA /* HabitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBE7D65E29C114ED00598ECA /* HabitViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +29,7 @@
 		CBDD559A29B9E2EB0098917F /* HabitsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitsViewController.swift; sourceTree = "<group>"; };
 		CBDD559C29B9E3360098917F /* InfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoViewController.swift; sourceTree = "<group>"; };
 		CBDD55A029BA59470098917F /* InfoText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoText.swift; sourceTree = "<group>"; };
+		CBE7D65E29C114ED00598ECA /* HabitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,6 +77,7 @@
 			isa = PBXGroup;
 			children = (
 				CBDD559A29B9E2EB0098917F /* HabitsViewController.swift */,
+				CBE7D65E29C114ED00598ECA /* HabitViewController.swift */,
 				CBDD559C29B9E3360098917F /* InfoViewController.swift */,
 			);
 			path = Controllers;
@@ -161,6 +164,7 @@
 			files = (
 				CBDD559929B9DDB30098917F /* HabitsStore.swift in Sources */,
 				CBDD558529B79B710098917F /* AppDelegate.swift in Sources */,
+				CBE7D65F29C114ED00598ECA /* HabitViewController.swift in Sources */,
 				CBDD55A129BA59470098917F /* InfoText.swift in Sources */,
 				CBDD559B29B9E2EB0098917F /* HabitsViewController.swift in Sources */,
 				CBDD559D29B9E3360098917F /* InfoViewController.swift in Sources */,

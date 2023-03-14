@@ -13,7 +13,6 @@ class HabitsViewController: UIViewController {
     
     private lazy var addButton: UIBarButtonItem = {
         let button = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addButtonTapped))
-        button.tintColor = .systemPurple
         return button
     }()
     
@@ -23,13 +22,18 @@ class HabitsViewController: UIViewController {
         super.viewDidLoad()
         
         setupView()
-
+        
     }
     
     //MARK: - Action
     
     @objc func addButtonTapped() {
-        print("Hello")
+        let habitViewController = HabitViewController()
+        
+        let navigationController = UINavigationController(rootViewController: habitViewController)
+        navigationController.modalPresentationStyle = .fullScreen 
+        
+        present(navigationController, animated: true, completion: nil)
     }
     
     //MARK: - Private
@@ -38,15 +42,11 @@ class HabitsViewController: UIViewController {
         title = "Привычки"
         navigationItem.rightBarButtonItem = addButton
         view.backgroundColor = .systemBackground
-
+        
         tabBarItem = UITabBarItem(
             title: "Привычки",
             image: UIImage(systemName: "rectangle.grid.1x2.fill"),
             tag: 0)
-        tabBarItem.selectedImage = UIImage(systemName: "rectangle.grid.1x2.fill")?.withTintColor(UIColor.systemPurple, renderingMode: .alwaysOriginal)
-        tabBarItem.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.systemPurple], for: .selected)
-
-
     }
     
 }

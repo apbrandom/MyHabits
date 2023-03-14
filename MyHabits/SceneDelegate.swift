@@ -19,7 +19,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         let controllers = [
             HabitsViewController(),
-            InfoViewController()
+            InfoViewController(),
         ]
         
         let tabBarVC = UITabBarController()
@@ -30,10 +30,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
         
         UINavigationBar.appearance().prefersLargeTitles = true
-        
-//        tabBarVC.navigationController?.navigationBar.prefersLargeTitles = true
+
         window.rootViewController = tabBarVC
         window.makeKeyAndVisible()
+        window.tintColor = .systemPurple
         
         self.window = window
     }
