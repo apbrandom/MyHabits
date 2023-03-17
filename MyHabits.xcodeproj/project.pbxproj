@@ -15,6 +15,8 @@
 		CBDD559B29B9E2EB0098917F /* HabitsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBDD559A29B9E2EB0098917F /* HabitsViewController.swift */; };
 		CBDD559D29B9E3360098917F /* InfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBDD559C29B9E3360098917F /* InfoViewController.swift */; };
 		CBDD55A129BA59470098917F /* InfoText.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBDD55A029BA59470098917F /* InfoText.swift */; };
+		CBE1043A29C4A03000590923 /* ProgressCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBE1043929C4A03000590923 /* ProgressCollectionViewCell.swift */; };
+		CBE1043C29C4F8D900590923 /* HabitCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBE1043B29C4F8D900590923 /* HabitCollectionViewCell.swift */; };
 		CBE7D65F29C114ED00598ECA /* HabitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBE7D65E29C114ED00598ECA /* HabitViewController.swift */; };
 		CBE7D66129C39B6900598ECA /* CircleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBE7D66029C39B6900598ECA /* CircleButton.swift */; };
 /* End PBXBuildFile section */
@@ -30,6 +32,8 @@
 		CBDD559A29B9E2EB0098917F /* HabitsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitsViewController.swift; sourceTree = "<group>"; };
 		CBDD559C29B9E3360098917F /* InfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoViewController.swift; sourceTree = "<group>"; };
 		CBDD55A029BA59470098917F /* InfoText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoText.swift; sourceTree = "<group>"; };
+		CBE1043929C4A03000590923 /* ProgressCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressCollectionViewCell.swift; sourceTree = "<group>"; };
+		CBE1043B29C4F8D900590923 /* HabitCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitCollectionViewCell.swift; sourceTree = "<group>"; };
 		CBE7D65E29C114ED00598ECA /* HabitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitViewController.swift; sourceTree = "<group>"; };
 		CBE7D66029C39B6900598ECA /* CircleButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -79,6 +83,8 @@
 			isa = PBXGroup;
 			children = (
 				CBDD559A29B9E2EB0098917F /* HabitsViewController.swift */,
+				CBE1043B29C4F8D900590923 /* HabitCollectionViewCell.swift */,
+				CBE1043929C4A03000590923 /* ProgressCollectionViewCell.swift */,
 				CBE7D65E29C114ED00598ECA /* HabitViewController.swift */,
 				CBDD559C29B9E3360098917F /* InfoViewController.swift */,
 			);
@@ -170,9 +176,11 @@
 				CBE7D65F29C114ED00598ECA /* HabitViewController.swift in Sources */,
 				CBDD55A129BA59470098917F /* InfoText.swift in Sources */,
 				CBE7D66129C39B6900598ECA /* CircleButton.swift in Sources */,
+				CBE1043A29C4A03000590923 /* ProgressCollectionViewCell.swift in Sources */,
 				CBDD559B29B9E2EB0098917F /* HabitsViewController.swift in Sources */,
 				CBDD559D29B9E3360098917F /* InfoViewController.swift in Sources */,
 				CBDD558729B79B710098917F /* SceneDelegate.swift in Sources */,
+				CBE1043C29C4F8D900590923 /* HabitCollectionViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

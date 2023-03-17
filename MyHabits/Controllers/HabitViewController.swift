@@ -219,7 +219,6 @@ class HabitViewController: UIViewController {
         topBottomStackView.addArrangedSubview(everyDayLabel)
         
         centerView.addSubview(timePickerView)
-        
     }
     
     private func setupNavigation() {
@@ -257,7 +256,6 @@ class HabitViewController: UIViewController {
         let safeArea = view.safeAreaLayoutGuide
         
         NSLayoutConstraint.activate([
-            
             mainStackView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
             mainStackView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor),
             mainStackView.topAnchor.constraint(equalTo: safeArea.topAnchor),
