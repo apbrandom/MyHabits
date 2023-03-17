@@ -14,7 +14,6 @@ class HabitViewController: UIViewController {
     private lazy var mainStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
-        stackView.backgroundColor = .systemGray
         stackView.distribution = .fillEqually
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
@@ -22,21 +21,18 @@ class HabitViewController: UIViewController {
     
     private lazy var topView: UIView = {
         let view = UIView()
-        view.backgroundColor = .systemRed
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
     
     private lazy var centerView: UIView = {
         let view = UIView()
-        view.backgroundColor = .systemGreen
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
     
     private lazy var bottomView: UIView = {
         let view = UIView()
-        view.backgroundColor = .systemBlue
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -44,7 +40,6 @@ class HabitViewController: UIViewController {
     private lazy var topStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
-        stackView.backgroundColor = .systemTeal
         stackView.distribution = .fillEqually
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
@@ -52,7 +47,6 @@ class HabitViewController: UIViewController {
     
     private lazy var topTopView: UIView = {
         let view = UIView()
-        view.backgroundColor = .systemRed
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -60,7 +54,6 @@ class HabitViewController: UIViewController {
     private lazy var topTopStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
-        stackView.backgroundColor = .systemTeal
         stackView.distribution = .fillEqually
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
@@ -68,14 +61,12 @@ class HabitViewController: UIViewController {
     
     private lazy var topCenterView: UIView = {
         let view = UIView()
-        view.backgroundColor = .systemGreen
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
     
     private lazy var topBottomView: UIView = {
         let view = UIView()
-        view.backgroundColor = .systemBlue
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -83,7 +74,6 @@ class HabitViewController: UIViewController {
     private lazy var topBottomStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
-        stackView.backgroundColor = .systemOrange
         stackView.distribution = .fillEqually
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
@@ -98,26 +88,25 @@ class HabitViewController: UIViewController {
     
     private lazy var habitNameTextField: UITextField = {
         let textField = UITextField()
-        textField.placeholder = "Напиши что нибудь"
+        textField.placeholder = "Бегать по утрам, спать 8 часов и т.п."
+        textField.autocorrectionType = .no
+        textField.spellCheckingType = .no
         textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
     }()
     
     private lazy var pickerColorLabel: UILabel = {
         let label = UILabel()
-        label.text = "Цает"
+        label.text = "Цвет"
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
-    private lazy var pickerColorButton: UIButton = {
-        let button = UIButton()
+    private lazy var pickerColorButton: CircleButton = {
+        let button = CircleButton()
         button.backgroundColor = .systemBackground
         button.layer.borderWidth = 1
         button.layer.borderColor = UIColor.systemPurple.cgColor
-        button.layer.cornerRadius = button.bounds.width / 2
-        button.layer.masksToBounds = true
-       
         button.addTarget(
             self,
             action: #selector(didTapButtonPickerColor),
@@ -135,30 +124,27 @@ class HabitViewController: UIViewController {
     
     private lazy var everyDayLabel: UILabel = {
         let label = UILabel()
-//        label.text = "Каждый день в"
-        let attributedString = NSMutableAttributedString(string: "Каждый день в")
-            attributedString.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.red, range: NSRange(location: 0, length: 11)) // здесь указываем диапазон символов, которые нужно сделать красными
-            label.attributedText = attributedString
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    private lazy var timePickerLabel: UILabel = {
-        let label = UILabel()
-        label.text = "11:00"
+        label.attributedText = attributedTimeString(for: timePickerView.date)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     private lazy var timePickerView: UIDatePicker = {
-        let timePiecker = UIDatePicker()
-        timePiecker.datePickerMode = .time
+        let timePicker = UIDatePicker()
+        timePicker.datePickerMode = .time
         if #available(iOS 13.4, *) {
-            timePiecker.preferredDatePickerStyle = .wheels
+            timePicker.preferredDatePickerStyle = .wheels
         }
-        timePiecker.translatesAutoresizingMaskIntoConstraints = false
-        return timePiecker
+        timePicker.addTarget(
+            self,
+            action: #selector(timePickerValueChanged(_:)),
+            for: .valueChanged)
+        
+        timePicker.translatesAutoresizingMaskIntoConstraints = false
+        return timePicker
     }()
+    
+    //MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -166,7 +152,17 @@ class HabitViewController: UIViewController {
         setupView()
         setupSubviews()
         setupConstraints()
+        habitNameTextField.becomeFirstResponder()
+        habitNameTextField.inputAssistantItem.leadingBarButtonGroups = []
+        habitNameTextField.inputAssistantItem.trailingBarButtonGroups = []
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+            super.viewDidAppear(animated)
+            habitNameTextField.becomeFirstResponder()
+            habitNameTextField.inputAssistantItem.leadingBarButtonGroups = []
+            habitNameTextField.inputAssistantItem.trailingBarButtonGroups = []
+        }
     
     //MARK: - Action
     
@@ -189,6 +185,10 @@ class HabitViewController: UIViewController {
         present(pickerColorController, animated: true)
     }
     
+    @objc func timePickerValueChanged(_ sender: UIDatePicker) {
+        everyDayLabel.attributedText = attributedTimeString(for: sender.date)
+    }
+    
     //MARK: - Private
     
     private func setupView() {
@@ -198,7 +198,7 @@ class HabitViewController: UIViewController {
     }
     
     private func setupSubviews() {
-
+        
         view.addSubview(mainStackView)
         mainStackView.addArrangedSubview(topView)
         mainStackView.addArrangedSubview(centerView)
@@ -212,17 +212,14 @@ class HabitViewController: UIViewController {
         topTopView.addSubview(topTopStackView)
         topTopStackView.addArrangedSubview(habitNameLabel)
         topTopStackView.addArrangedSubview(habitNameTextField)
-        
         topCenterView.addSubview(pickerColorLabel)
         topCenterView.addSubview(pickerColorButton)
-        
         topBottomView.addSubview(topBottomStackView)
-        
         topBottomStackView.addArrangedSubview(timeLabel)
         topBottomStackView.addArrangedSubview(everyDayLabel)
-//        topStackView.addArrangedSubview(timePickerLabel)
+        
         centerView.addSubview(timePickerView)
-
+        
     }
     
     private func setupNavigation() {
@@ -242,6 +239,18 @@ class HabitViewController: UIViewController {
             action: #selector(didTapSaveButton))
     }
     
+    private func attributedTimeString(for date: Date) -> NSAttributedString {
+        let dateFormatter = DateFormatter()
+        dateFormatter.timeStyle = .short
+        let timeString = dateFormatter.string(from: date)
+        
+        let attributedString = NSMutableAttributedString(string: "Каждый день в \(timeString)")
+        let timeStringRange = (attributedString.string as NSString).range(of: timeString)
+        attributedString.addAttribute(.foregroundColor, value: UIColor.systemPurple, range: timeStringRange)
+        
+        return attributedString
+    }
+    
     //MARK: - Layout
     
     private func setupConstraints() {
@@ -254,11 +263,11 @@ class HabitViewController: UIViewController {
             mainStackView.topAnchor.constraint(equalTo: safeArea.topAnchor),
             mainStackView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor),
             
-            topStackView.leadingAnchor.constraint(equalTo: topView.leadingAnchor),
+            topStackView.leadingAnchor.constraint(equalTo: topView.leadingAnchor, constant: 16),
             topStackView.topAnchor.constraint(equalTo: topView.topAnchor),
             topStackView.bottomAnchor.constraint(equalTo: topView.bottomAnchor),
             topStackView.trailingAnchor.constraint(equalTo: topView.trailingAnchor),
-
+            
             topTopStackView.leadingAnchor.constraint(equalTo: topTopView.leadingAnchor),
             topTopStackView.topAnchor.constraint(equalTo: topTopView.topAnchor),
             topTopStackView.bottomAnchor.constraint(equalTo: topTopView.bottomAnchor),
@@ -271,28 +280,25 @@ class HabitViewController: UIViewController {
             
             pickerColorLabel.topAnchor.constraint(equalTo: topCenterView.topAnchor),
             pickerColorLabel.leadingAnchor.constraint(equalTo: topCenterView.leadingAnchor),
-
-            pickerColorButton.leadingAnchor.constraint(equalTo: topCenterView.leadingAnchor, constant: 16),
-            pickerColorButton.topAnchor.constraint(greaterThanOrEqualTo: pickerColorLabel.bottomAnchor, constant: 5),
-//            pickerColorButton.heightAnchor.constraint(equalToConstant: 20),
+            
+            pickerColorButton.leadingAnchor.constraint(equalTo: topCenterView.leadingAnchor),
+            pickerColorButton.topAnchor.constraint(greaterThanOrEqualTo: pickerColorLabel.bottomAnchor, constant: 15),
             pickerColorButton.widthAnchor.constraint(equalToConstant: 30),
-//            pickerColorButton.trailingAnchor.constraint(equalTo: topStackView.trailingAnchor, constant: 30),
+            pickerColorButton.heightAnchor.constraint(equalToConstant: 30),
             
             timePickerView.centerXAnchor.constraint(equalTo: centerView.centerXAnchor),
             timePickerView.centerYAnchor.constraint(equalTo: centerView.centerYAnchor),
-            
         ])
     }
-    
 }
 
-//MARK: - Extensions
+//MARK: - Deligate
 
 extension HabitViewController: UIColorPickerViewControllerDelegate {
-    
     func colorPickerViewControllerDidSelectColor(_ viewController: UIColorPickerViewController) {
         let color = viewController.selectedColor
         pickerColorButton.backgroundColor = color
         pickerColorButton.layer.borderWidth = 0
     }
 }
+

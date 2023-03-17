@@ -22,7 +22,6 @@ class HabitsViewController: UIViewController {
         super.viewDidLoad()
         
         setupView()
-        
     }
     
     //MARK: - Action
