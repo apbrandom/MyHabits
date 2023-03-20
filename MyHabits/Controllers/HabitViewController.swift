@@ -104,7 +104,6 @@ class HabitViewController: UIViewController {
     
     private lazy var pickerColorButton: CircleButton = {
         let button = CircleButton()
-        button.backgroundColor = .systemBackground
         button.layer.borderWidth = 1
         button.layer.borderColor = UIColor.systemPurple.cgColor
         button.addTarget(
@@ -153,15 +152,15 @@ class HabitViewController: UIViewController {
         setupSubviews()
         setupConstraints()
         habitNameTextField.becomeFirstResponder()
-        habitNameTextField.inputAssistantItem.leadingBarButtonGroups = []
-        habitNameTextField.inputAssistantItem.trailingBarButtonGroups = []
+//        habitNameTextField.inputAssistantItem.leadingBarButtonGroups = []
+//        habitNameTextField.inputAssistantItem.trailingBarButtonGroups = []
     }
     
     override func viewDidAppear(_ animated: Bool) {
             super.viewDidAppear(animated)
             habitNameTextField.becomeFirstResponder()
-            habitNameTextField.inputAssistantItem.leadingBarButtonGroups = []
-            habitNameTextField.inputAssistantItem.trailingBarButtonGroups = []
+//            habitNameTextField.inputAssistantItem.leadingBarButtonGroups = []
+//            habitNameTextField.inputAssistantItem.trailingBarButtonGroups = []
         }
     
     //MARK: - Action

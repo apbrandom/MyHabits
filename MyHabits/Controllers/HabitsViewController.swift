@@ -19,18 +19,19 @@ class HabitsViewController: UIViewController {
     
     private lazy var habitsCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.sectionInset = UIEdgeInsets(top: 21, left: 0, bottom: 0, right: 0)
-        
-        let itemWidth = UIScreen.main.bounds.width - 16 * 2
-        let itemHeight = UIScreen.main.bounds.height / 5.5
-        layout.itemSize = CGSize(width:  itemWidth, height: itemHeight)
-        layout.minimumLineSpacing = 12
         
         let collectionView = UICollectionView(
             frame: .zero,
             collectionViewLayout: layout)
+        
+        collectionView.backgroundColor = UIColor(
+            red: 242/255,
+            green: 242/255,
+            blue: 247/255,
+            alpha: 1)
+        
         collectionView.translatesAutoresizingMaskIntoConstraints = false
-                return collectionView
+        return collectionView
     }()
     
     //MARK: - Lifecycle
@@ -98,20 +99,41 @@ class HabitsViewController: UIViewController {
     }
 }
 
-//MARK: - 
+//MARK: - DataSource
 
 extension HabitsViewController: UICollectionViewDataSource {
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 100
+        return HabitsStore.shared.habits.count
     }
+    
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HabitCollectionViewCell.indentifire, for: indexPath)
-        return cell
+        if indexPath.item == 0 {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProgressCollectionViewCell.indentifire, for: indexPath)
+            return cell
+        } else {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HabitCollectionViewCell.indentifire, for: indexPath)
+            return cell
+        }
     }
-    
 }
 
-extension HabitsViewController: UICollectionViewDelegateFlowLayout {}
+//MARK: - Delegate
 
+//MARK: - Delegate
+
+extension HabitsViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let itemWidth = UIScreen.main.bounds.width - 16 * 2
+        let habitItemHeight = UIScreen.main.bounds.height / 6
+        let progressItemHeight: CGFloat = 60
+        
+        if indexPath.item == 0 {
+            return CGSize(width: itemWidth, height: progressItemHeight)
+        } else {
+            return CGSize(width: itemWidth, height: habitItemHeight)
+        }
+    }
+}
 
