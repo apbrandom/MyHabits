@@ -11,6 +11,8 @@ class HabitCollectionViewCell: UICollectionViewCell {
     
     static let indentifire = "HabitCell"
     
+    var habit: Habit?
+    
     private lazy var habitNameLabel: UILabel = {
         let label = UILabel()
         label.text = "Hello"
@@ -39,8 +41,15 @@ class HabitCollectionViewCell: UICollectionViewCell {
     
     private lazy var checkButton: CircleButton = {
         let button = CircleButton()
+        var color = UIColor()
         button.layer.borderWidth = 2
         button.layer.borderColor = UIColor.systemPurple.cgColor
+        button.addTarget(
+            self,
+            action: #selector(checkButtonDidTaped),
+            for: .touchUpInside)
+        button.backgroundColor = .white
+        button.imageView?.contentMode = .scaleAspectFit
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -58,6 +67,36 @@ class HabitCollectionViewCell: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    //MARK: - Public
+    
+    func update(_ model: Habit?) {
+        guard let habit = model else { return }
+        habitNameLabel.text = habit.name
+        everyDayLabel.text = habit.dateString
+        counterDayLabel.text = "\(habit.trackDates.count)"
+        checkButton.tintColor = habit.color
+        checkButton.layer.borderColor = habit.color.cgColor
+    }
+    
+    @objc func checkButtonDidTaped() {
+        
+        checkButton.isSelected.toggle()
+        
+        if checkButton.isSelected {
+            let checkmarkImage = UIImage(systemName: "checkmark.circle.fill")
+            checkButton.setImage(checkmarkImage, for: .normal)
+            checkButton.layer.borderWidth = 5
+            guard let habit = habit, !habit.isAlreadyTakenToday else { return }
+                HabitsStore.shared.track(habit) // помощь нужна здесь
+        } else {
+            checkButton.setImage(nil, for: .normal)
+            checkButton.layer.borderWidth = 2
+            checkButton.backgroundColor = .white
+        }
+    }
+    
+    //MARK: - Private
     
     private func setupSubview() {
         contentView.addSubview(habitNameLabel)
@@ -98,6 +137,5 @@ class HabitCollectionViewCell: UICollectionViewCell {
                 equalTo: checkButton.widthAnchor)
         ])
     }
-    
     
 }

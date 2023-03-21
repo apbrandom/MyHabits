@@ -70,8 +70,6 @@ class InfoViewController: UIViewController {
             tag: 0)
         
         tabBarItem.selectedImage = UIImage(systemName: "info.circle.fill")?.withTintColor(UIColor.systemPurple, renderingMode: .alwaysOriginal)
-        
-        tabBarItem.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.systemPurple], for: .selected)
     }
     
     private func setupSubviews() {

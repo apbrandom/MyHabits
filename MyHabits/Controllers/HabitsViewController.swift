@@ -9,6 +9,7 @@ import UIKit
 
 class HabitsViewController: UIViewController {
     
+    let habits = HabitsStore.shared.habits
     
     //MARK: - Subviews
     
@@ -52,7 +53,7 @@ class HabitsViewController: UIViewController {
         let navigationController = UINavigationController(rootViewController: habitViewController)
         navigationController.modalPresentationStyle = .fullScreen
         
-        present(navigationController, animated: true, completion: nil)
+        present(navigationController, animated: true)
     }
     
     //MARK: - Private
@@ -110,18 +111,27 @@ extension HabitsViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if indexPath.item == 0 {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProgressCollectionViewCell.indentifire, for: indexPath)
+            let cell =
+            collectionView.dequeueReusableCell(
+                withReuseIdentifier: ProgressCollectionViewCell.indentifire,
+                for: indexPath)
             return cell
         } else {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HabitCollectionViewCell.indentifire, for: indexPath)
+            guard let cell =
+                    collectionView.dequeueReusableCell(
+                        withReuseIdentifier: HabitCollectionViewCell.indentifire,
+                        for: indexPath) as? HabitCollectionViewCell else {
+                return UICollectionViewCell()
+            }
+            
+            let habit = habits[indexPath.item - 1]
+            cell.update(habit)
             return cell
         }
     }
 }
 
-//MARK: - Delegate
-
-//MARK: - Delegate
+//MARK: - DelegateFlowLayout
 
 extension HabitsViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -135,5 +145,16 @@ extension HabitsViewController: UICollectionViewDelegateFlowLayout {
             return CGSize(width: itemWidth, height: habitItemHeight)
         }
     }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let habitDetailVC = HabitDetailViewController()
+        if indexPath.item != 0 {
+            habitDetailVC.habit = habits[indexPath.item - 1]
+        }
+        navigationController?.pushViewController(habitDetailVC, animated: true)
+    }
+    
 }
+
+
 

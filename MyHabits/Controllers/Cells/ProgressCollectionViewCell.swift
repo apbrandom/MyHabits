@@ -32,7 +32,7 @@ class ProgressCollectionViewCell: UICollectionViewCell {
     private lazy var habitsProgressView: UIProgressView = {
         let progressView = UIProgressView()
         progressView.transform = CGAffineTransform(scaleX: 1, y: 2)
-        progressView.progress = 0.5
+        progressView.progress = HabitsStore.shared.todayProgress
         progressView.translatesAutoresizingMaskIntoConstraints = false
         return progressView
     }()
@@ -76,7 +76,6 @@ class ProgressCollectionViewCell: UICollectionViewCell {
             procentProgressLabel.trailingAnchor.constraint(
                 equalTo: contentView.trailingAnchor, constant: -12),
             
-
             habitsProgressView.leadingAnchor.constraint(
                 equalTo: contentView.leadingAnchor, constant: 12),
             habitsProgressView.trailingAnchor.constraint(
@@ -85,5 +84,4 @@ class ProgressCollectionViewCell: UICollectionViewCell {
                 equalTo: contentView.bottomAnchor, constant: -15)
         ])
     }
-    
 }

@@ -9,6 +9,10 @@ import UIKit
 
 class HabitViewController: UIViewController {
     
+    var habit: Habit?
+    
+    var editScreen: Bool = false
+    
     //MARK: - Subviews
     
     private lazy var mainStackView: UIStackView = {
@@ -91,6 +95,7 @@ class HabitViewController: UIViewController {
         textField.placeholder = "Бегать по утрам, спать 8 часов и т.п."
         textField.autocorrectionType = .no
         textField.spellCheckingType = .no
+        textField.delegate = self
         textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
     }()
@@ -100,18 +105,6 @@ class HabitViewController: UIViewController {
         label.text = "Цвет"
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
-    }()
-    
-    private lazy var pickerColorButton: CircleButton = {
-        let button = CircleButton()
-        button.layer.borderWidth = 1
-        button.layer.borderColor = UIColor.systemPurple.cgColor
-        button.addTarget(
-            self,
-            action: #selector(didTapButtonPickerColor),
-            for: .touchUpInside)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
     }()
     
     private lazy var timeLabel: UILabel = {
@@ -126,6 +119,18 @@ class HabitViewController: UIViewController {
         label.attributedText = attributedTimeString(for: timePickerView.date)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
+    }()
+    
+    private lazy var pickerColorButton: CircleButton = {
+        let button = CircleButton()
+        button.layer.borderWidth = 1
+        button.layer.borderColor = UIColor.systemPurple.cgColor
+        button.addTarget(
+            self,
+            action: #selector(didTapButtonPickerColor),
+            for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
     }()
     
     private lazy var timePickerView: UIDatePicker = {
@@ -143,6 +148,18 @@ class HabitViewController: UIViewController {
         return timePicker
     }()
     
+    private lazy var habitDeleteButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("Удалить привычку", for: .normal)
+        button.setTitleColor(.systemRed, for: .normal)
+        button.addTarget(
+            self,
+            action: #selector(didTapHabitDeleteButton),
+            for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
     //MARK: - Lifecycle
     
     override func viewDidLoad() {
@@ -151,17 +168,13 @@ class HabitViewController: UIViewController {
         setupView()
         setupSubviews()
         setupConstraints()
-        habitNameTextField.becomeFirstResponder()
-//        habitNameTextField.inputAssistantItem.leadingBarButtonGroups = []
-//        habitNameTextField.inputAssistantItem.trailingBarButtonGroups = []
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-            super.viewDidAppear(animated)
-            habitNameTextField.becomeFirstResponder()
-//            habitNameTextField.inputAssistantItem.leadingBarButtonGroups = []
-//            habitNameTextField.inputAssistantItem.trailingBarButtonGroups = []
+        setupEditScreen()
+        
+        if !editScreen {
+            setupKeyboard()
         }
+
+    }
     
     //MARK: - Action
     
@@ -170,12 +183,14 @@ class HabitViewController: UIViewController {
     }
     
     @objc func didTapSaveButton() {
-        //        let newHabit = Habit(name: "Выпить стакан воды перед завтраком",
-        //                             date: Date(),
-        //                             color: .systemRed)
-        //        let store = HabitsStore.shared
-        //        store.habits.append(newHabit)
-        //        print(store.habits)
+        guard let text = habitNameTextField.text, !text.isEmpty else { return }
+        let newHabit = Habit(name: text,
+                             date: timePickerView.date,
+                             color: pickerColorButton.backgroundColor ?? .systemBackground)
+        let store = HabitsStore.shared
+        store.habits.append(newHabit)
+        print(store.habits)
+        dismiss(animated: true, completion: nil)
     }
     
     @objc func didTapButtonPickerColor() {
@@ -188,12 +203,21 @@ class HabitViewController: UIViewController {
         everyDayLabel.attributedText = attributedTimeString(for: sender.date)
     }
     
+    @objc func didTapHabitDeleteButton() {
+        guard let habitToRemove = habit else { return }
+            let store = HabitsStore.shared
+        if let index = store.habits.firstIndex(where: { $0 == habitToRemove }) {
+            store.habits.remove(at: index)
+            print("Habit removed:", habitToRemove)
+            navigationController?.pushViewController(HabitsViewController(), animated: true)
+        }
+    }
+    
     //MARK: - Private
     
     private func setupView() {
         view.backgroundColor = .systemBackground
         setupNavigation()
-        
     }
     
     private func setupSubviews() {
@@ -249,6 +273,33 @@ class HabitViewController: UIViewController {
         return attributedString
     }
     
+    func habitUpDate() {
+        if let habit = habit {
+            habitNameTextField.text = habit.name
+            timePickerView.date = habit.date
+            pickerColorButton.backgroundColor = habit.color
+            everyDayLabel.attributedText = attributedTimeString(for: habit.date)
+        }
+    }
+    
+    private func setupKeyboard() {
+        habitNameTextField.becomeFirstResponder()
+    }
+    
+    private func setupEditScreen() {
+        if editScreen {
+            habitUpDate()
+            
+            view.addSubview(habitDeleteButton)
+            NSLayoutConstraint.activate([
+                habitDeleteButton.bottomAnchor.constraint(
+                    equalTo: mainStackView.bottomAnchor, constant: -18),
+                habitDeleteButton.centerXAnchor.constraint(
+                    equalTo: mainStackView.centerXAnchor)
+            ])
+        }
+    }
+    
     //MARK: - Layout
     
     private func setupConstraints() {
@@ -285,11 +336,13 @@ class HabitViewController: UIViewController {
             
             timePickerView.centerXAnchor.constraint(equalTo: centerView.centerXAnchor),
             timePickerView.centerYAnchor.constraint(equalTo: centerView.centerYAnchor),
+            
         ])
     }
+    
 }
 
-//MARK: - Deligate
+//MARK: - Delegates
 
 extension HabitViewController: UIColorPickerViewControllerDelegate {
     func colorPickerViewControllerDidSelectColor(_ viewController: UIColorPickerViewController) {
@@ -299,3 +352,13 @@ extension HabitViewController: UIColorPickerViewControllerDelegate {
     }
 }
 
+extension HabitViewController: UITextFieldDelegate {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        let currentText = textField.text ?? ""
+        let updatedText = (currentText as NSString).replacingCharacters(in: range, with: string)
+        
+        let maxLength = 35 // Максимальное количество символов
+        return updatedText.count <= maxLength
+    }
+    
+}
