@@ -30,6 +30,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
         
         UINavigationBar.appearance().prefersLargeTitles = true
+        UINavigationBar.appearance().backgroundColor = .systemBackground
         window.tintColor = .systemPurple
         window.rootViewController = tabBarVC
         window.makeKeyAndVisible()

@@ -9,7 +9,7 @@ import UIKit
 
 class HabitsViewController: UIViewController {
     
-    let habits = HabitsStore.shared.habits
+    var habits = HabitsStore.shared.habits
     
     //MARK: - Subviews
     
@@ -21,6 +21,12 @@ class HabitsViewController: UIViewController {
     private lazy var habitsCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         
+        layout.sectionInset = UIEdgeInsets(
+            top: 22,
+            left: 0,
+            bottom: 0,
+            right: 0
+        )
         let collectionView = UICollectionView(
             frame: .zero,
             collectionViewLayout: layout)
@@ -46,6 +52,14 @@ class HabitsViewController: UIViewController {
         configureCollectionView()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        habits = HabitsStore.shared.habits
+        habitsCollectionView.reloadData()
+        
+    }
+    
     //MARK: - Action
     
     @objc func addButtonTapped() {
@@ -65,7 +79,7 @@ class HabitsViewController: UIViewController {
     private func setupView() {
         title = "Сегодня"
         navigationItem.rightBarButtonItem = addButton
-        view.backgroundColor = .secondarySystemBackground
+        view.backgroundColor = .systemBackground
         
         tabBarItem = UITabBarItem(
             title: "Привычки",
@@ -104,27 +118,37 @@ class HabitsViewController: UIViewController {
 
 extension HabitsViewController: UICollectionViewDataSource {
     
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+            return 2
+        }
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return HabitsStore.shared.habits.count
+        switch section {
+        case 0:
+            return 1
+        case 1:
+            return habits.count
+        default:
+            return 0
+        }
     }
-    
-    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if indexPath.item == 0 {
-            let cell =
-            collectionView.dequeueReusableCell(
+        if indexPath.section == 0 {
+            guard let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: ProgressCollectionViewCell.indentifire,
-                for: indexPath)
-            return cell
-        } else {
-            guard let cell =
-                    collectionView.dequeueReusableCell(
-                        withReuseIdentifier: HabitCollectionViewCell.indentifire,
-                        for: indexPath) as? HabitCollectionViewCell else {
+                for: indexPath) as? ProgressCollectionViewCell else {
                 return UICollectionViewCell()
             }
-            
-            let habit = habits[indexPath.item - 1]
+            cell.update()
+            return cell
+        } else {
+            guard let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: HabitCollectionViewCell.indentifire,
+                for: indexPath) as? HabitCollectionViewCell else {
+                return UICollectionViewCell()
+            }
+            cell.delegate = self
+            let habit = habits[indexPath.item]
             cell.update(habit)
             return cell
         }
@@ -135,26 +159,39 @@ extension HabitsViewController: UICollectionViewDataSource {
 
 extension HabitsViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        
         let itemWidth = UIScreen.main.bounds.width - 16 * 2
         let habitItemHeight = UIScreen.main.bounds.height / 6
         let progressItemHeight: CGFloat = 60
         
-        if indexPath.item == 0 {
-            return CGSize(width: itemWidth, height: progressItemHeight)
+        if indexPath.section == 0 {
+            return CGSize(
+                width: itemWidth,
+                height: progressItemHeight
+            )
         } else {
-            return CGSize(width: itemWidth, height: habitItemHeight)
+            return CGSize(
+                width: itemWidth,
+                height: habitItemHeight
+            )
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let habitDetailVC = HabitDetailViewController()
-        if indexPath.item != 0 {
-            habitDetailVC.habit = habits[indexPath.item - 1]
+        if indexPath.section == 1 {
+            habitDetailVC.habit = habits[indexPath.item]
+            navigationController?.pushViewController(habitDetailVC, animated: true)
         }
-        navigationController?.pushViewController(habitDetailVC, animated: true)
+        
     }
     
 }
 
-
+extension HabitsViewController: HabitCollectionViewCellDelegate {
+    func habitCellDidUpdate(_ cell: HabitCollectionViewCell) {
+        guard let progressCell = habitsCollectionView.cellForItem(at: IndexPath(item: 0, section: 0)) as? ProgressCollectionViewCell else { return }
+        progressCell.update()
+    }
+}
 

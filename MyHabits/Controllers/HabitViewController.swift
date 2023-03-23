@@ -173,17 +173,12 @@ class HabitViewController: UIViewController {
         if !editScreen {
             setupKeyboard()
         }
-
     }
     
     //MARK: - Action
     
-    @objc func didTapDismissButton() {
-        dismiss(animated: true, completion: nil)
-    }
-    
     @objc func didTapSaveButton() {
-        guard let text = habitNameTextField.text, !text.isEmpty else { return }
+        guard let text = habitNameTextField.text, !text.isEmpty, pickerColorButton.backgroundColor != nil else { return }
         let newHabit = Habit(name: text,
                              date: timePickerView.date,
                              color: pickerColorButton.backgroundColor ?? .systemBackground)
@@ -192,6 +187,12 @@ class HabitViewController: UIViewController {
         print(store.habits)
         dismiss(animated: true, completion: nil)
     }
+    
+    @objc func didTapDismissButton() {
+        dismiss(animated: true, completion: nil)
+    }
+    
+    
     
     @objc func didTapButtonPickerColor() {
         let pickerColorController = UIColorPickerViewController()
@@ -205,7 +206,7 @@ class HabitViewController: UIViewController {
     
     @objc func didTapHabitDeleteButton() {
         guard let habitToRemove = habit else { return }
-            let store = HabitsStore.shared
+        let store = HabitsStore.shared
         if let index = store.habits.firstIndex(where: { $0 == habitToRemove }) {
             store.habits.remove(at: index)
             print("Habit removed:", habitToRemove)
@@ -289,7 +290,7 @@ class HabitViewController: UIViewController {
     private func setupEditScreen() {
         if editScreen {
             habitUpDate()
-            
+            pickerColorButton.layer.borderColor = habit?.color.cgColor
             view.addSubview(habitDeleteButton)
             NSLayoutConstraint.activate([
                 habitDeleteButton.bottomAnchor.constraint(

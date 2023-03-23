@@ -9,9 +9,15 @@ import UIKit
 
 class HabitCollectionViewCell: UICollectionViewCell {
     
+    weak var delegate: HabitCollectionViewCellDelegate?
+    
+    //MARK: - Data
+    
     static let indentifire = "HabitCell"
     
     var habit: Habit?
+    
+    //MARK: - Subviews
     
     private lazy var habitNameLabel: UILabel = {
         let label = UILabel()
@@ -62,7 +68,9 @@ class HabitCollectionViewCell: UICollectionViewCell {
         configureCell()
         setupSubview()
         setupConstraints()
+        
     }
+    
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -71,29 +79,39 @@ class HabitCollectionViewCell: UICollectionViewCell {
     //MARK: - Public
     
     func update(_ model: Habit?) {
-        guard let habit = model else { return }
+        habit = model
+        guard let habit = habit else { return }
         habitNameLabel.text = habit.name
+        habitNameLabel.textColor = habit.color
         everyDayLabel.text = habit.dateString
         counterDayLabel.text = "\(habit.trackDates.count)"
         checkButton.tintColor = habit.color
         checkButton.layer.borderColor = habit.color.cgColor
+        
+        if habit.isAlreadyTakenToday {
+            selectedButton()
+        } else {
+            notSelectedButton()
+        }
     }
     
     @objc func checkButtonDidTaped() {
+        guard let habit = habit else { return }
+        
+        if !habit.isAlreadyTakenToday {
+            HabitsStore.shared.track(habit)
+        }
         
         checkButton.isSelected.toggle()
         
         if checkButton.isSelected {
-            let checkmarkImage = UIImage(systemName: "checkmark.circle.fill")
-            checkButton.setImage(checkmarkImage, for: .normal)
-            checkButton.layer.borderWidth = 5
-            guard let habit = habit, !habit.isAlreadyTakenToday else { return }
-                HabitsStore.shared.track(habit) // помощь нужна здесь
-        } else {
-            checkButton.setImage(nil, for: .normal)
-            checkButton.layer.borderWidth = 2
-            checkButton.backgroundColor = .white
+            selectedButton()
+            update(habit)
+        } else if !habit.isAlreadyTakenToday {
+            notSelectedButton()
         }
+        
+        delegate?.habitCellDidUpdate(self)
     }
     
     //MARK: - Private
@@ -108,6 +126,18 @@ class HabitCollectionViewCell: UICollectionViewCell {
     private func configureCell() {
         contentView.layer.cornerRadius = 10
         contentView.backgroundColor = .systemBackground
+    }
+    
+    private func selectedButton() {
+        let checkmarkImage = UIImage(systemName: "checkmark.circle.fill")
+        checkButton.setImage(checkmarkImage, for: .normal)
+        checkButton.layer.borderWidth = 5
+    }
+    
+    private func notSelectedButton() {
+        checkButton.setImage(nil, for: .normal)
+        checkButton.layer.borderWidth = 2
+        checkButton.backgroundColor = .white
     }
     
     private func setupConstraints() {
@@ -139,3 +169,5 @@ class HabitCollectionViewCell: UICollectionViewCell {
     }
     
 }
+
+

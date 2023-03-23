@@ -9,11 +9,16 @@ import UIKit
 
 class ProgressCollectionViewCell: UICollectionViewCell {
     
+    //MARK: - Data
+    
     static let indentifire = "ProgressCell"
+    
+    var habit: Habit?
+    
+    //MARK: - Subviews
     
     private lazy var progressLabel: UILabel = {
         let label = UILabel()
-        label.text = "Все получится!"
         label.font = UIFont.systemFont(ofSize: 13, weight: .semibold)
         label.textColor = .systemGray
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -22,7 +27,7 @@ class ProgressCollectionViewCell: UICollectionViewCell {
     
     private lazy var procentProgressLabel: UILabel = {
         let label = UILabel()
-        label.text = "50%"
+        label.text = "0%"
         label.font = .systemFont(ofSize: 13, weight: .semibold)
         label.textColor = .systemGray
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -49,6 +54,21 @@ class ProgressCollectionViewCell: UICollectionViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    //MARK: - Public
+    
+    func update() {
+        guard !HabitsStore.shared.habits.isEmpty else {
+            progressLabel.text = "Добавте свою первую привычку"
+            return
+        }
+        
+        progressLabel.text = "Все получится!"
+        habitsProgressView.progress = HabitsStore.shared.todayProgress
+        let progressInPercent = Int(HabitsStore.shared.todayProgress * 100)
+        procentProgressLabel.text = "\(progressInPercent)%"
+        
     }
     
     //MARK: - Private

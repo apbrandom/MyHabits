@@ -126,18 +126,26 @@ class HabitDetailViewController: UIViewController {
 
 extension HabitDetailViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        HabitsStore.shared.dates.count
+        habits.dates.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(
             withIdentifier: "HabitDateCell",
             for: indexPath)
-        let date = HabitsStore.shared.dates[indexPath.row]
+        let date = habits.dates[indexPath.row]
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .medium
         dateFormatter.timeStyle = .none
         cell.textLabel?.text = dateFormatter.string(from: date)
+        
+        if let curentHabit = habit {
+            if habits.habit(curentHabit, isTrackedIn: date) {
+                cell.accessoryType = .checkmark
+            } else {
+                cell.accessoryType = .none
+            }
+        }
         
         return cell
     }
