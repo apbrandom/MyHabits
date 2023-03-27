@@ -160,6 +160,38 @@ class HabitViewController: UIViewController {
         return button
     }()
     
+    private lazy var deleteAlertController: UIAlertController = {
+        let alertController = UIAlertController(
+            title: "Удалить привычку",
+            message: "Вы хотите удалить привычку \"\(habit?.name ?? "Привычку")\"?",
+            preferredStyle: .alert
+        )
+        
+        let cancelAction = UIAlertAction(
+            title: "Отмена",
+            style: .cancel
+        )
+        
+        let deleteAction = UIAlertAction(
+            title: "Удалить",
+            style: .destructive)
+        { _ in
+            guard let habitToRemove = self.habit else { return }
+            let store = HabitsStore.shared
+            
+            if let index = store.habits.firstIndex(where: { $0 == habitToRemove }) {
+                store.habits.remove(at: index)
+                print("Habit removed:", habitToRemove)
+                
+            }
+            self.navigationController?.pushViewController(HabitsViewController(), animated: true)
+        }
+        
+        alertController.addAction(cancelAction)
+        alertController.addAction(deleteAction)
+        return alertController
+    }()
+    
     //MARK: - Lifecycle
     
     override func viewDidLoad() {
@@ -178,21 +210,29 @@ class HabitViewController: UIViewController {
     //MARK: - Action
     
     @objc func didTapSaveButton() {
+        
         guard let text = habitNameTextField.text, !text.isEmpty, pickerColorButton.backgroundColor != nil else { return }
-        let newHabit = Habit(name: text,
-                             date: timePickerView.date,
-                             color: pickerColorButton.backgroundColor ?? .systemBackground)
-        let store = HabitsStore.shared
-        store.habits.append(newHabit)
-        print(store.habits)
-        dismiss(animated: true, completion: nil)
+        
+        if editScreen {
+            habit?.name = text
+            habit?.date = timePickerView.date
+            habit?.color = pickerColorButton.backgroundColor ?? .white
+            navigationController?.pushViewController(HabitsViewController(), animated: true)
+        } else {
+            
+            let newHabit = Habit(name: text,
+                                 date: timePickerView.date,
+                                 color: pickerColorButton.backgroundColor ?? .systemBackground)
+            let store = HabitsStore.shared
+            store.habits.append(newHabit)
+            print(store.habits)
+            dismiss(animated: true, completion: nil)
+        }
     }
     
     @objc func didTapDismissButton() {
         dismiss(animated: true, completion: nil)
     }
-    
-    
     
     @objc func didTapButtonPickerColor() {
         let pickerColorController = UIColorPickerViewController()
@@ -205,24 +245,17 @@ class HabitViewController: UIViewController {
     }
     
     @objc func didTapHabitDeleteButton() {
-        guard let habitToRemove = habit else { return }
-        let store = HabitsStore.shared
-        if let index = store.habits.firstIndex(where: { $0 == habitToRemove }) {
-            store.habits.remove(at: index)
-            print("Habit removed:", habitToRemove)
-            navigationController?.pushViewController(HabitsViewController(), animated: true)
-        }
+        present(deleteAlertController, animated: true, completion: nil)
     }
     
     //MARK: - Private
     
     private func setupView() {
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = .systemGray6
         setupNavigation()
     }
     
     private func setupSubviews() {
-        
         view.addSubview(mainStackView)
         mainStackView.addArrangedSubview(topView)
         mainStackView.addArrangedSubview(centerView)
@@ -249,12 +282,19 @@ class HabitViewController: UIViewController {
         title = "Создать"
         navigationItem.largeTitleDisplayMode = .never
         
-        navigationItem.leftBarButtonItem = UIBarButtonItem(
-            title: "Назад",
-            style: .plain,
-            target: self,
-            action: #selector(didTapDismissButton))
-        
+        if editScreen {
+            navigationItem.leftBarButtonItem = UIBarButtonItem(
+                title: "Отменить",
+                style: .plain,
+                target: self,
+                action: #selector(didTapDismissButton))
+        } else {
+            navigationItem.leftBarButtonItem = UIBarButtonItem(
+                title: "Назад",
+                style: .plain,
+                target: self,
+                action: #selector(didTapDismissButton))
+        }
         navigationItem.rightBarButtonItem = UIBarButtonItem(
             title: "Сохранить",
             style: .done,
@@ -292,11 +332,15 @@ class HabitViewController: UIViewController {
             habitUpDate()
             pickerColorButton.layer.borderColor = habit?.color.cgColor
             view.addSubview(habitDeleteButton)
+            
             NSLayoutConstraint.activate([
                 habitDeleteButton.bottomAnchor.constraint(
-                    equalTo: mainStackView.bottomAnchor, constant: -18),
+                    equalTo: mainStackView.bottomAnchor,
+                    constant: -18
+                ),
                 habitDeleteButton.centerXAnchor.constraint(
-                    equalTo: mainStackView.centerXAnchor)
+                    equalTo: mainStackView.centerXAnchor
+                )
             ])
         }
     }
@@ -337,10 +381,8 @@ class HabitViewController: UIViewController {
             
             timePickerView.centerXAnchor.constraint(equalTo: centerView.centerXAnchor),
             timePickerView.centerYAnchor.constraint(equalTo: centerView.centerYAnchor),
-            
         ])
     }
-    
 }
 
 //MARK: - Delegates
@@ -362,4 +404,9 @@ extension HabitViewController: UITextFieldDelegate {
         return updatedText.count <= maxLength
     }
     
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+    }
 }
+
+

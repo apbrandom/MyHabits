@@ -79,7 +79,7 @@ class HabitsViewController: UIViewController {
     private func setupView() {
         title = "Сегодня"
         navigationItem.rightBarButtonItem = addButton
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = .systemGray6
         
         tabBarItem = UITabBarItem(
             title: "Привычки",
@@ -117,7 +117,6 @@ class HabitsViewController: UIViewController {
 //MARK: - DataSource
 
 extension HabitsViewController: UICollectionViewDataSource {
-    
     func numberOfSections(in collectionView: UICollectionView) -> Int {
             return 2
         }
@@ -136,7 +135,8 @@ extension HabitsViewController: UICollectionViewDataSource {
         if indexPath.section == 0 {
             guard let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: ProgressCollectionViewCell.indentifire,
-                for: indexPath) as? ProgressCollectionViewCell else {
+                for: indexPath) as? ProgressCollectionViewCell
+            else {
                 return UICollectionViewCell()
             }
             cell.update()
@@ -144,7 +144,8 @@ extension HabitsViewController: UICollectionViewDataSource {
         } else {
             guard let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: HabitCollectionViewCell.indentifire,
-                for: indexPath) as? HabitCollectionViewCell else {
+                for: indexPath) as? HabitCollectionViewCell
+            else {
                 return UICollectionViewCell()
             }
             cell.delegate = self
@@ -183,9 +184,7 @@ extension HabitsViewController: UICollectionViewDelegateFlowLayout {
             habitDetailVC.habit = habits[indexPath.item]
             navigationController?.pushViewController(habitDetailVC, animated: true)
         }
-        
     }
-    
 }
 
 extension HabitsViewController: HabitCollectionViewCellDelegate {

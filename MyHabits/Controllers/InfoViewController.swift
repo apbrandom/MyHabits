@@ -17,14 +17,14 @@ class InfoViewController: UIViewController {
     
     private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
-        scrollView.backgroundColor = .systemBackground
+        scrollView.backgroundColor = .white
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         return scrollView
     }()
     
     private lazy var contentView: UIView = {
         let view = UIView()
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = .white
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -62,7 +62,7 @@ class InfoViewController: UIViewController {
     private func setupView() {
         title = "Информация"
         navigationItem.largeTitleDisplayMode = .never
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = .systemGray6
         
         tabBarItem = UITabBarItem(
             title: "Информация",
@@ -104,5 +104,4 @@ class InfoViewController: UIViewController {
             infoTextView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
         ])
     }
-    
 }
